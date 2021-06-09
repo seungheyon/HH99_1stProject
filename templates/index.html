@@ -1,166 +1,170 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <!-- Webpage Title -->
-        <title>MyTube</title>
+<head>
+    <!-- Webpage Title -->
+    <title>MyTube</title>
 
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- Bulma CSS -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-        <!-- JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 
-        <style>
-            .title {
-                font-weight: 800;
-                font-size: 5rem;
-                {#font-family: 'Single Day', cursive;#}
-                padding-bottom: 20px;
-                color: red !important;
-                cursor: pointer;
-                transition: transform 300ms ease;
-            }
-            .title:hover {
-                transform: scale(1.1);
-            }
-            .subtitle {
-                font-size: 2rem;
-                font-family: 'Single Day', cursive;
-            }
-            .nickname {
-                font-family: 'Single Day', cursive;
-                font-size: 30px;
-            }
-            .hr {
-                size: 4px;
-                width: 70%;
-                margin: auto;
-                background-color: black;
-                margin-bottom: 30px;
-            }
-            .button {
-                font-family: 'Single Day', cursive;
-                transition: transform 300ms ease;
-            }
-            .button:hover {
-                transform: scale(1.1);
-            }
-            .field {
-                width: 50%;
-                margin: auto;
-            }
-            .category {
-                margin: auto;
-                width: 40%;
-            }
+    <style>
+        .title {
+            font-weight: 800;
+            font-size: 5rem;
+        {#font-family: 'Single Day', cursive;#} padding-bottom: 20px;
+            color: red !important;
+            cursor: pointer;
+            transition: transform 300ms ease;
+        }
 
-        </style>
+        .title:hover {
+            transform: scale(1.1);
+        }
 
-        <script>
-            {#로그아웃 함수#}
-            function logout() {
-                $.removeCookie('mytoken');
-                alert('잘가요!!!')
-                window.location.href = '/login'
-            }
+        .nickname {
+            font-family: 'Do Hyeon', sans-serif;
+            font-size: 30px;
+        }
 
-            {#카테고리 서버에서 불러오는 함수#}
-            $(document).ready(function () {
-                get_categorys();
-            });
+        .hr {
+            size: 4px;
+            width: 70%;
+            margin: auto;
+            background-color: black;
+            margin-bottom: 30px;
+        }
 
-            {#카테고리 작성 함수#}
-            function post() {
-                let category = $("#category-input").val()
-                $.ajax({
-                    type: "POST",
-                    url: "/posting",
-                    data: {
-                        category_give: category
-                    },
-                    success: function (response) {
-                        if (response['result'] == 'success') {
-                            alert(response['msg'])
-                            window.location.reload()
-                        }
+        .button {
+            font-family: 'Do Hyeon', sans-serif;
+            transition: transform 300ms ease;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+        }
+
+        .field {
+            width: 50%;
+            margin: auto;
+        }
+
+        .category {
+            margin: auto;
+            width: 40%;
+        }
+
+    </style>
+
+    <script>
+        {#로그아웃 함수#}
+
+        function logout() {
+            $.removeCookie('mytoken');
+            alert('다음에 또 봐요')
+            window.location.href = '/login'
+        }
+
+        {#카테고리 서버에서 불러오는 함수#}
+        $(document).ready(function () {
+            get_categorys();
+        });
+
+        {#카테고리 작성 함수#}
+
+        function post() {
+            let category = $("#category-input").val()
+            $.ajax({
+                type: "POST",
+                url: "/posting",
+                data: {
+                    category_give: category
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        window.location.reload()
                     }
-                })
-            }
+                }
+            })
+        }
 
-            {#저장된 카테고리 불러오는 함수#}
-            function get_categorys() {
-                $("#category-box").empty()
-                $.ajax({
-                    type: "GET",
-                    url: "/get_category",
-                    data: {},
-                    success: function (response) {
-                        if (response["result"] == "success") {
-                            let categorys = response["all_category"]
-                            for (let i = 0; i < categorys.length; i++) {
-                                let category = categorys[i]
-                                {#let time_post = new Date(post["date"])#}
-                                let html_temp = `<div class="notification is-danger">
+        {#저장된 카테고리 불러오는 함수#}
+
+        function get_categorys() {
+            $("#category-box").empty()
+            $.ajax({
+                type: "GET",
+                url: "/get_category",
+                data: {},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        let categorys = response["all_category"]
+                        for (let i = 0; i < categorys.length; i++) {
+                            let category = categorys[i]
+                            {#let time_post = new Date(post["date"])#}
+                            let html_temp = `<div class="notification is-danger">
                                                     <button class="delete"></button>
                                                     <a>${category}</a>
                                                 </div>`
-                                $("#category-box").append(html_temp)
-                            }
+                            $("#category-box").append(html_temp)
                         }
                     }
-                })
-            }
-        </script>
+                }
+            })
+        }
+    </script>
 
-    </head>
-    <body>
-    {#    로그인한 사용자 표시#}
-        <div class="nickname">{{ nickname }}님 어서오세요!
-            {#    로그아웃 버튼#}
-            <button class="button is-danger" onclick="logout()">로그아웃하기</button>
-        </div>
+</head>
+<body>
+{#    로그인한 사용자 표시#}
+<div class="nickname">{{ nickname }}님 반갑습니다
+    {#    로그아웃 버튼#}
+    <button class="button is-danger" onclick="logout()">로그아웃하기</button>
+</div>
 
 {#        타이틀 & 메인페이지 링크#}
-        <section class="hero is-white">
-            <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
-                <a href="/"><h1 class="title">MyTube</h1></a>
-                <h3 class="subtitle ">유튜브도 카테고리 기능을 사용하고 싶다!</h3>
-            </div>
-        </section>
-        <hr class="hr">
+<section class="hero is-white">
+    <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+        <a href="/"><h1 class="title">MyTube</h1></a>
+    </div>
+</section>
+<hr class="hr">
 
-        <div class="field is-grouped">
-            <p class="control is-expanded">
-                <input id="category-input" class="input" type="text" placeholder="만들고 싶은 카테고리의 이름을 입력해 주세요">
-            </p>
-            <p class="control">
-                <a class="button is-info is-danger" onclick="post()">
-                    추가하기
-                </a>
-            </p>
-        </div>
+<div class="field is-grouped">
+    <p class="control is-expanded">
+        <input id="category-input" class="input" type="text" placeholder="만들고 싶은 카테고리의 이름을 입력해 주세요">
+    </p>
+    <p class="control">
+        <a class="button is-info is-danger" onclick="post()">
+            추가하기
+        </a>
+    </p>
+</div>
 
-        <div class="category category-box">
+<div class="category category-box">
 
             <span class="tag is-danger is-large">
                 주제
                 <button class="delete"></button>
             </span>
 
-            <div class="notification is-danger">
-                <button class="delete"></button>
-                <a>먹방</a>
-            </div>
+    <div class="notification is-danger">
+        <button class="delete"></button>
+        <a>먹방</a>
+    </div>
 
-        </div>
+</div>
 
 
-    </body>
+</body>
 </html>
