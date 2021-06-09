@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <!-- bulma -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+
+    <!--icon을 위한 font awesome-->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <style>
+        .wrap {
+            width: 1000px;
+            margin: 0px auto 100px auto;
+        }
+
+        .card {
+            margin: 20px;
+        }
+
+        .card-content {
+            width: 270px;
+        }
+
+        .banner {
+            border-bottom: 4px solid orangered;
+            margin: 30px 0px 30px 0px;
+            padding-bottom: 50px;
+            display: flex;
+        }
+
+        .register-btn {
+            margin-left: auto;
+        }
+
+        .form-post {
+            width: 500px;
+            margin: 20px auto;
+            padding: 50px;
+            border: black solid;
+            border-radius: 5px;
+        }
+        a:link { color: black; }
+        a:visited { color: black; }
+        a:hover { color: orangered; }
+        a{color:black}
+        .card-icon {
+            display: flex;
+            justify-content : flex-end;
+        }
+        .card-icon > a{
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+
+        // 채널 등록폼 열고 닫기
+        function openClose() {
+            if ($("#post-box").css("display") == "block") {
+                $("#post-box").hide();
+                $("#register-btn").text("추가하기");
+            } else {
+                $("#update-box").hide();
+                $("#post-box").show();
+                $("#register-btn").text("닫기");
+            }
+        }
+
+        // 채널 수정폼 열기
+        function openUpdateForm(channel_id, name, desc){
+            $("#post-box").hide();
+            $("#update-box").show();
+
+            // 클릭한 채널에 맞게 폼 수정
+            $("#update-channel-name").val(name);
+            $("#update-channel-desc").val(desc);
+            $("#update-btn").attr("onclick", "updateChannel('"+channel_id+"')");
+
+
+        }
+
+        // 채널 등록하기
+        function postChannel() {
+            let url = $('#channel-url').val()
+            let desc = $('#channel-desc').val()
+            let category = "{{ category }}"
+
+            // 입력 검사
+            if (!url.includes("youtube.com")){
+                alert("유튜브 URL을 입력해주세요!");
+                return;
+            }else if(!url.includes("youtube.com/channel/")){
+                alert('유튜브 "채널" URL을 입력해주세요!');
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/channel/insert",
+                data: {url: url, desc: desc, category: category},
+                success: function (response) { // 성공하면
+                    alert(response["msg"]);
+                    window.location.reload(); //새로고침
+                }
+            })
+        }
+
+        // 채널 삭제
+        function deleteChannel(channel_id) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/channel/delete',
+                    data: { channel_id: channel_id },
+                    success: function (response) {
+                        alert(response['msg']);
+                        showChannels();
+                    }
+                });
+            }
+
+        // 채널 수정
+        function updateChannel(channel_id) {
+            desc = $("#update-channel-desc").val();
+            $.ajax({
+                type: 'POST',
+                url: '/api/channel/update',
+                data: {channel_id: channel_id,
+                    channel_desc: desc},
+                success: function (response) {
+                    alert(response['msg']);
+                    $("#update-box").hide();
+                    showChannels();
+                }
+            });
+        }
+
+        // 채널 조회
+        function showChannels() {
+            let category = "{{ category }}"
+            $('#channels-box').empty();
+
+            $.ajax({
+                type: "GET",
+                url: "/api/channel/list",
+                data: {category: category},
+                success: function (response) {
+                    let channels = response['channels']
+
+                    for (let i = 0; i < channels.length; i++) {
+                        let name = channels[i]['channel_name']
+                        let image = channels[i]['channel_image']
+                        let url = channels[i]['channel_url']
+                        let desc = channels[i]['channel_desc']
+                        let channel_id = channels[i]['_id']
+
+                        temp_html = `<div class="card column is-narrow">
+                            <div class="card-image">
+                                <a onclick ="deleteChannel('${channel_id}')"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                <figure class="image is-4by3">
+                                    <img src="${image}" alt="Placeholder image" href="${url}">
+                                </figure>
+                            </a>
+                            <div class="card-content">
+                              <div class="media">
+                                <div class="media-content">
+                                  <p class="title is-4"><a href= "${url}">${name}</a></p>
+                                </div>
+                              </div>
+                              <div class="content">${desc}</div>
+                            </div>
+                            <div class="card-icon">
+                                <a onclick="openUpdateForm('${channel_id}', '${name}', '${desc}')"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                <a href=""><i class="fa fa-star-o" aria-hidden="true"></i></a>
+                            <div>
+                          </div>`
+                        $('#channels-box').append(temp_html);
+
+                    }
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            showChannels();
+        });
+
+    </script>
+</head>
+<body>
+
+    <div class="wrap">
+        <!--상단 배너-->
+        <section class="banner">
+            <div class="banner-body">
+                <p class="title">
+                    {{ category }}
+                </p>
+                <p class="subtitle">
+                    나의 {{ category }} 채널을 모아놓은 곳입니다.
+                </p>
+
+            </div>
+            <button class="button register-btn" id="register-btn" onclick="openClose()">추가하기</button>
+        </section>
+
+        <!-- 채널 등록폼 -->
+        <div id="post-box" class="form-post" style="display:none">
+
+            <div class="field">
+                <label class="label">유튜브 채널 URL</label>
+                <div class="control">
+                    <input class="input" id="channel-url" type="text" placeholder="Text input">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">채널 설명</label>
+                <div class="control">
+                    <input class="input" id="channel-desc" type="text" placeholder="Text input">
+                </div>
+            </div>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-link" onclick="postChannel()">등록하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 채널 수정폼 -->
+        <div id="update-box" class="form-post" style="display:none">
+
+            <div class="field">
+                <label class="label">수정할 유튜브 채널명</label>
+                <div class="control">
+                    <input class="input" id="update-channel-name" type="text" placeholder="Text input" disabled>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">채널 설명 수정</label>
+                <div class="control">
+                    <input class="input" id="update-channel-desc" type="text" placeholder="Text input">
+                </div>
+            </div>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-link" id="update-btn" onclick="updateChannel()">수정하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 채널 목록 -->
+        <div class="card-box columns is-multiline" id="channels-box">
+
+            <div class="card column is-narrow">
+                <div class="card-image">
+                    <figure class="image is-4by3">
+                        <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <div class="media">
+
+                        <div class="media-content">
+                            <p class="title is-4">John Smith</p>
+                            <p class="subtitle is-6">@johnsmith</p>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                        Lorem ipsum dolor sit amet,  <a>@bulmaio</a>.
+                        <a href="#">#css</a> <a href="#">#responsive</a>
+                        <br>
+                        <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
