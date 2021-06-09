@@ -1,0 +1,136 @@
+﻿<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Webpage Title -->
+        <title>MyTube</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bulma CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+        <!-- JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap" rel="stylesheet">
+
+        <style>
+            .logo:hover {
+                transform: scale(1.1);
+            }
+
+            .logo {
+                {#text-align: center;#}
+                width: 150px;
+                margin: auto;
+                margin-top: 50px;
+                cursor: pointer;
+                transition: transform 300ms ease;
+            }
+            .title {
+                font-weight: 800;
+                font-size: 5rem;
+                {#font-family: 'Single Day', cursive;#}
+                padding-bottom: 20px;
+                color: red !important;
+                cursor: pointer;
+                transition: transform 300ms ease;
+            }
+            .title:hover {
+                transform: scale(1.1);
+            }
+
+            .subtitle {
+                font-size: 2rem;
+                font-family: 'Single Day', cursive;
+            }
+            .button {
+                font-family: 'Single Day', cursive;
+                cursor: pointer;
+                transition: transform 300ms ease;
+            }
+            .button:hover {
+                transform: scale(1.1);
+            }
+            .section {
+                width: 50%;
+                margin: auto;
+            }
+        </style>
+
+        <script>
+{#            {% if msg %}#}
+{#                alert("{{ msg }}")#}
+{#            {% endif %}#}
+            function login() {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/login",
+                    data: {
+                        id_give: $('#userid').val(),
+                        pw_give: $('#userpw').val()
+                    },
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            $.cookie('mytoken', response['token']);
+                            alert('Welcome MyTube!!!')
+                            window.location.href = '/'
+                        } else {
+                            alert(response['msg'])
+                        }
+                    }
+                })
+            }
+        </script>
+    </head>
+    <body>
+{#        로고 & 유튜브 링크#}
+        <div class="logo">
+            <a href="https://www.youtube.com/" target="_blank"><img src="/static/YouTube_logo.png"></a>
+        </div>
+
+{#        타이틀 & 메인페이지 링크#}
+        <section class="hero is-white">
+            <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+                <a href="/"><h1 class="title">MyTube</h1></a>
+                <h3 class="subtitle ">유튜브도 카테고리 기능을 사용하고 싶다!</h3>
+            </div>
+        </section>
+
+        <div class="section has-text-centered">
+            <div class="container" style="width:60%">
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label" for="userid">아이디</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <input type="text" class="input" id="userid" aria-describedby="emailHelp"
+                                       placeholder="아이디">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label" for="userpw">비밀번호</label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <input type="password" class="input" id="userpw" placeholder="비밀번호">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="button is-danger is-light" onclick="login()">로그인</button>
+                <a href="{{ url_for('register') }}"><button class="button is-danger is-light">회원가입</button></a>
+
+            </div>
+        </div>
+    </body>
+</html>
