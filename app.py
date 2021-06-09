@@ -1,15 +1,17 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
-
-import jwt ,datetime, hashlib
+from pymongo import MongoClient
+import jwt, datetime, hashlib, requests
+from bs4 import BeautifulSoup
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 
-from pymongo import MongoClient
-
-client = MongoClient('mongodb://13.209.35.149', 27017, username="test", password="test")
+client = MongoClient('localhost', 27017)
+# client = MongoClient('AWS 아이디', 27017, username="test", password="test")
 db = client.dbsparta_plus_week4
 
 SECRET_KEY = 'mytube'
+
 
 # 메인페이지 - index.html
 @app.route('/')
@@ -23,6 +25,7 @@ def home():
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
 
 # 메인페이지 카테고리 추가 API
 @app.route('/posting', methods=['POST'])
@@ -40,6 +43,7 @@ def posting():
         return jsonify({"result": "success", 'msg': '카테고리 추가 성공!'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
+
 
 # 메인페이지 카테고리 DB에서 가져오기 API
 @app.route("/get_category", methods=['GET'])
@@ -99,7 +103,7 @@ def api_login():
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
-        return jsonify({'result': 'success', 'token': token})  # .decode('utf-8')
+        return jsonify({'result': 'success', 'token': token.decode('utf-8')})  # pyJWT 1.7이라면 .decode('utf-8') 추가
 
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
@@ -111,6 +115,7 @@ def check_dup():
     id_receive = request.form['username_give']
     exists = bool(db.user.find_one({"id": id_receive}))
     return jsonify({'result': 'success', 'exists': exists})
+
 
 # 닉네임 중복확인 API
 @app.route('/sign_up/check_dup_nick', methods=['POST'])
@@ -138,6 +143,75 @@ def api_valid():
 
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
+
+# 채널 페이지로 이동
+@app.route('/channel')
+def channel_page():
+    category = request.args.get("category")
+    return render_template('channel.html', category=category)
+
+
+# 카테고리의 채널 조회
+@app.route('/api/channel/list', methods=['GET'])
+def channel_list():
+    category = request.args.get("category")
+    channels = list(db.channel.find({'channel_category': category}))
+
+    for channel in channels:
+        channel["_id"] = str(channel["_id"])
+    return jsonify({'channels': channels})
+
+
+# 채널 저장
+@app.route('/api/channel/insert', methods=['POST'])
+def channel_save():
+    url = request.form['url']
+    desc = request.form['desc']
+    category = request.form['category']
+
+    # 받은 url 으로 스크랩핑
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+    data = requests.get(url, headers=headers)
+    soup = BeautifulSoup(data.text, 'html.parser')
+
+    ogTitle = soup.select_one('meta[property="og:title"]')['content']
+    ogImage = soup.select_one('meta[property="og:image"]')['content']
+    # ogSite = soup.select_one('meta[property="og:site_name"]')['content'] : youtube
+    ogUrl = soup.select_one('meta[property="og:url"]')['content']
+
+    # DB에 insert
+    doc ={'channel_name': ogTitle,
+          'channel_image': ogImage,
+          'channel_url': ogUrl,
+          'channel_category': category,
+          'channel_desc': desc}
+    print(doc)
+    db.channel.insert_one(doc)
+
+    return jsonify({'msg': '채널이 저장되었습니다!'})
+
+
+# 채널 삭제
+@app.route('/api/channel/delete', methods=['POST'])
+def channel_delete():
+    channel_id = request.form['channel_id']
+    # pymongo _id의 타입인 objectId로 변환
+    db.channel.delete_one({'_id': ObjectId(channel_id)})
+
+    return jsonify({'msg': '삭제되었습니다!'})
+
+
+# 채널 수정
+@app.route('/api/channel/update', methods=['POST'])
+def channel_update():
+    channel_id = request.form['channel_id']
+    channel_desc = request.form['channel_desc']
+
+    # pymongo _id의 타입인 objectId로 변환
+    db.channel.update_one({'_id': ObjectId(channel_id)}, {'$set': {'channel_desc': channel_desc}})
+
+    return jsonify({'msg': '수정되었습니다!'})
 
 
 if __name__ == '__main__':
