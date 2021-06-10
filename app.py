@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 client = MongoClient('localhost', 27017)
 # client = MongoClient('AWS 아이디', 27017, username="test", password="test")
-db = client.dbsparta_plus_week4
+db = client.mytube
 
 SECRET_KEY = 'mytube'
 
@@ -144,50 +144,73 @@ def api_valid():
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
+
 # 채널 페이지로 이동
 @app.route('/channel')
 def channel_page():
-    category = request.args.get("category")
-    return render_template('channel.html', category=category)
+    category_receive = request.args.get("category")
+    token_receive = request.cookies.get('mytoken')
+
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+    return render_template('channel.html', category=category_receive)
 
 
 # 카테고리의 채널 조회
 @app.route('/api/channel/list', methods=['GET'])
 def channel_list():
-    category = request.args.get("category")
-    channels = list(db.channel.find({'channel_category': category}))
+    category_receive = request.args.get("category")
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        channels = list(db.channel.find({'user_id': payload["id"], 'channel_category': category_receive})
+                        .sort("channel_star", -1))
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
+    # mongoDB의 _id 타입을 objectId 에서 문자열로 변환
     for channel in channels:
         channel["_id"] = str(channel["_id"])
+
     return jsonify({'channels': channels})
 
 
 # 채널 저장
 @app.route('/api/channel/insert', methods=['POST'])
 def channel_save():
-    url = request.form['url']
-    desc = request.form['desc']
-    category = request.form['category']
+    token_receive = request.cookies.get('mytoken')
+    url_receive = request.form['url']
+    desc_receive = request.form['desc']
+    category_receive = request.form['category']
 
-    # 받은 url 으로 스크랩핑
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-    data = requests.get(url, headers=headers)
-    soup = BeautifulSoup(data.text, 'html.parser')
+    try:
+        # 받은 url 으로 스크랩핑
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+        data = requests.get(url_receive, headers=headers)
+        soup = BeautifulSoup(data.text, 'html.parser')
+        ogTitle = soup.select_one('meta[property="og:title"]')['content']
+        ogImage = soup.select_one('meta[property="og:image"]')['content']
+        ogUrl = soup.select_one('meta[property="og:url"]')['content']
+    except:
+        return jsonify({'msg': '저장되지 않았습니다. URL을 다시 확인해주세요.'})
 
-    ogTitle = soup.select_one('meta[property="og:title"]')['content']
-    ogImage = soup.select_one('meta[property="og:image"]')['content']
-    # ogSite = soup.select_one('meta[property="og:site_name"]')['content'] : youtube
-    ogUrl = soup.select_one('meta[property="og:url"]')['content']
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        doc = {'user_id': payload["id"],
+               'channel_name': ogTitle,
+               'channel_image': ogImage,
+               'channel_url': ogUrl,
+               'channel_category': category_receive,
+               'channel_desc': desc_receive,
+               'channel_star': False }
+        db.channel.insert_one(doc)
 
-    # DB에 insert
-    doc ={'channel_name': ogTitle,
-          'channel_image': ogImage,
-          'channel_url': ogUrl,
-          'channel_category': category,
-          'channel_desc': desc}
-    print(doc)
-    db.channel.insert_one(doc)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
     return jsonify({'msg': '채널이 저장되었습니다!'})
 
@@ -196,8 +219,14 @@ def channel_save():
 @app.route('/api/channel/delete', methods=['POST'])
 def channel_delete():
     channel_id = request.form['channel_id']
-    # pymongo _id의 타입인 objectId로 변환
-    db.channel.delete_one({'_id': ObjectId(channel_id)})
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        # 유저는 자신이 등록한 channel 만 삭제가능하다
+        # pymongo _id의 타입인 objectId로 변환
+        db.channel.delete_one({'_id': ObjectId(channel_id), 'user_id': payload["id"]})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
     return jsonify({'msg': '삭제되었습니다!'})
 
@@ -207,11 +236,37 @@ def channel_delete():
 def channel_update():
     channel_id = request.form['channel_id']
     channel_desc = request.form['channel_desc']
-
-    # pymongo _id의 타입인 objectId로 변환
-    db.channel.update_one({'_id': ObjectId(channel_id)}, {'$set': {'channel_desc': channel_desc}})
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        # 유저는 자신이 등록한 channel 만 수정가능하다
+        # pymongo _id의 타입인 objectId로 변환
+        db.channel.update_one({'_id': ObjectId(channel_id), 'user_id': payload["id"]},
+                              {'$set': {'channel_desc': channel_desc}})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
     return jsonify({'msg': '수정되었습니다!'})
+
+
+# 채널 즐겨찾기
+@app.route('/api/update_like', methods=['POST'])
+def update_star():
+    # 즐겨찾기 추가인지 취소인지
+    channel_id = request.form['channel_id']
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        # channel_star 값을 True <-> False 변경
+        channel = db.channel.find_one({'_id': ObjectId(channel_id), 'user_id': payload["id"]}, {'_id': False})
+        is_star = True if not channel["channel_star"] else False
+
+        db.channel.update_one({'_id': ObjectId(channel_id), 'user_id': payload["id"]},
+                              {'$set': {'channel_star': is_star}})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+    return jsonify({"result": "success"})
 
 
 if __name__ == '__main__':
