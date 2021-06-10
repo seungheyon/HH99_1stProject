@@ -25,7 +25,7 @@
         .logo {
         {#text-align: center;#} width: 60px;
             margin: auto;
-            margin-top: 50px;
+            margin-top: 12%;
             cursor: pointer;
             transition: transform 300ms ease;
         }
@@ -60,6 +60,7 @@
             border-color: transparent;
             color: #fff;
             font-size: 17px;
+            margin-top: 20px;
         }
 
         .button:hover {
@@ -96,7 +97,7 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         $.cookie('mytoken', response['token']);
-                        alert('Welcome MyTube!!!')
+                        alert('Welcome MyTube!')
                         window.location.href = '/'
                     } else {
                         alert(response['msg'])
