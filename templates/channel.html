@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>마이페이지</title>
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -16,10 +16,23 @@
     <!--icon을 위한 font awesome-->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
     <style>
         .wrap {
             width: 1000px;
             margin: 0px auto 100px auto;
+        }
+
+        .title {
+            font-family: 'Do Hyeon', sans-serif;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-family: 'Do Hyeon', sans-serif;
+            text-align: center;
         }
 
         .card {
@@ -31,14 +44,30 @@
         }
 
         .banner {
-            border-bottom: 4px solid orangered;
+            border: 2px;
+            border-style: solid;
+            border-top-color: white;
+            border-left-color: white;
+            border-right-color: white;
             margin: 30px 0px 30px 0px;
             padding-bottom: 50px;
             display: flex;
         }
 
+        .banner-body {
+            margin-left: 450px;
+            margin-top: 35px;
+        }
+
+        .label {
+            font-family: 'Do Hyeon', sans-serif;
+            text-align: center;
+        }
+
         .register-btn {
             margin-left: auto;
+            margin-left: 180px;
+            margin-top: 50px;
         }
 
         .form-post {
@@ -48,16 +77,53 @@
             border: black solid;
             border-radius: 5px;
         }
-        a:link { color: black; }
-        a:visited { color: black; }
-        a:hover { color: orangered; }
-        a{color:black}
+
+        a:link {
+            color: black;
+        }
+
+        a:visited {
+            color: black;
+        }
+
+        a:hover {
+            color: #363636;
+        }
+
+        a {
+            color: black
+        }
+
         .card-icon {
             display: flex;
-            justify-content : flex-end;
+            justify-content: flex-end;
         }
-        .card-icon > a{
+
+        .card-icon > a {
             margin-left: 10px;
+        }
+
+        #register-btn {
+            background-color: #363636;
+            color: white;
+            border-color: transparent;
+            font-family: 'Do Hyeon', sans-serif;
+        }
+
+        .button.is-link {
+            background-color: #363636;
+            border-color: transparent;
+            color: #fff;
+        }
+
+        #btn1 {
+            font-family: 'Do Hyeon', sans-serif;
+            margin-left: 160px;
+        }
+
+        #update-btn{
+            font-family: 'Do Hyeon', sans-serif;
+            margin-left:160px;
         }
     </style>
     <script>
@@ -75,14 +141,14 @@
         }
 
         // 채널 수정폼 열기
-        function openUpdateForm(channel_id, name, desc){
+        function openUpdateForm(channel_id, name, desc) {
             $("#post-box").hide();
             $("#update-box").show();
 
             // 클릭한 채널에 맞게 폼 수정
             $("#update-channel-name").val(name);
             $("#update-channel-desc").val(desc);
-            $("#update-btn").attr("onclick", "updateChannel('"+channel_id+"')");
+            $("#update-btn").attr("onclick", "updateChannel('" + channel_id + "')");
 
 
         }
@@ -94,10 +160,10 @@
             let category = "{{ category }}"
 
             // 입력 검사
-            if (!url.includes("youtube.com")){
+            if (!url.includes("youtube.com")) {
                 alert("유튜브 URL을 입력해주세요!");
                 return;
-            }else if(!url.includes("youtube.com/channel/")){
+            } else if (!url.includes("youtube.com/channel/")) {
                 alert('유튜브 "채널" URL을 입력해주세요!');
                 return;
             }
@@ -115,16 +181,16 @@
 
         // 채널 삭제
         function deleteChannel(channel_id) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/api/channel/delete',
-                    data: { channel_id: channel_id },
-                    success: function (response) {
-                        alert(response['msg']);
-                        showChannels();
-                    }
-                });
-            }
+            $.ajax({
+                type: 'POST',
+                url: '/api/channel/delete',
+                data: {channel_id: channel_id},
+                success: function (response) {
+                    alert(response['msg']);
+                    showChannels();
+                }
+            });
+        }
 
         // 채널 수정
         function updateChannel(channel_id) {
@@ -132,8 +198,10 @@
             $.ajax({
                 type: 'POST',
                 url: '/api/channel/update',
-                data: {channel_id: channel_id,
-                    channel_desc: desc},
+                data: {
+                    channel_id: channel_id,
+                    channel_desc: desc
+                },
                 success: function (response) {
                     alert(response['msg']);
                     $("#update-box").hide();
@@ -196,97 +264,97 @@
 </head>
 <body>
 
-    <div class="wrap">
-        <!--상단 배너-->
-        <section class="banner">
-            <div class="banner-body">
-                <p class="title">
-                    {{ category }}
-                </p>
-                <p class="subtitle">
-                    나의 {{ category }} 채널을 모아놓은 곳입니다.
-                </p>
+<div class="wrap">
+    <!--상단 배너-->
+    <section class="banner">
+        <div class="banner-body">
+            <p class="title">
+                {{ category }}
+            </p>
+            <p class="subtitle">
+                나의 {{ category }} 보관함
+            </p>
 
-            </div>
-            <button class="button register-btn" id="register-btn" onclick="openClose()">추가하기</button>
-        </section>
+        </div>
+        <button class="button register-btn" id="register-btn" onclick="openClose()">추가하기</button>
+    </section>
 
-        <!-- 채널 등록폼 -->
-        <div id="post-box" class="form-post" style="display:none">
+    <!-- 채널 등록폼 -->
+    <div id="post-box" class="form-post" style="display:none">
 
-            <div class="field">
-                <label class="label">유튜브 채널 URL</label>
-                <div class="control">
-                    <input class="input" id="channel-url" type="text" placeholder="Text input">
-                </div>
-            </div>
-
-            <div class="field">
-                <label class="label">채널 설명</label>
-                <div class="control">
-                    <input class="input" id="channel-desc" type="text" placeholder="Text input">
-                </div>
-            </div>
-
-            <div class="field is-grouped">
-                <div class="control">
-                    <button class="button is-link" onclick="postChannel()">등록하기</button>
-                </div>
+        <div class="field">
+            <label class="label">유튜브 채널 URL</label>
+            <div class="control">
+                <input class="input" id="channel-url" type="text" placeholder="채널 URL을 입력해주세요">
             </div>
         </div>
 
-        <!-- 채널 수정폼 -->
-        <div id="update-box" class="form-post" style="display:none">
-
-            <div class="field">
-                <label class="label">수정할 유튜브 채널명</label>
-                <div class="control">
-                    <input class="input" id="update-channel-name" type="text" placeholder="Text input" disabled>
-                </div>
-            </div>
-
-            <div class="field">
-                <label class="label">채널 설명 수정</label>
-                <div class="control">
-                    <input class="input" id="update-channel-desc" type="text" placeholder="Text input">
-                </div>
-            </div>
-
-            <div class="field is-grouped">
-                <div class="control">
-                    <button class="button is-link" id="update-btn" onclick="updateChannel()">수정하기</button>
-                </div>
+        <div class="field">
+            <label class="label">채널 설명</label>
+            <div class="control">
+                <input class="input" id="channel-desc" type="text" placeholder="해당 채널에 대한 설명을 적어주세요">
             </div>
         </div>
 
-        <!-- 채널 목록 -->
-        <div class="card-box columns is-multiline" id="channels-box">
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-link" id="btn1" onclick="postChannel()">등록하기</button>
+            </div>
+        </div>
+    </div>
 
-            <div class="card column is-narrow">
-                <div class="card-image">
-                    <figure class="image is-4by3">
-                        <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-                    </figure>
+    <!-- 채널 수정폼 -->
+    <div id="update-box" class="form-post" style="display:none">
+
+        <div class="field">
+            <label class="label">수정할 유튜브 채널명</label>
+            <div class="control">
+                <input class="input" id="update-channel-name" type="text" placeholder="Text input" disabled>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">채널 설명 수정</label>
+            <div class="control">
+                <input class="input" id="update-channel-desc" type="text" placeholder="Text input">
+            </div>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-link" id="update-btn" onclick="updateChannel()">수정하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 채널 목록 -->
+    <div class="card-box columns is-multiline" id="channels-box">
+
+        <div class="card column is-narrow">
+            <div class="card-image">
+                <figure class="image is-4by3">
+                    <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="media">
+
+                    <div class="media-content">
+                        <p class="title is-4">John Smith</p>
+                        <p class="subtitle is-6">@johnsmith</p>
+                    </div>
                 </div>
-                <div class="card-content">
-                    <div class="media">
 
-                        <div class="media-content">
-                            <p class="title is-4">John Smith</p>
-                            <p class="subtitle is-6">@johnsmith</p>
-                        </div>
-                    </div>
-
-                    <div class="content">
-                        Lorem ipsum dolor sit amet,  <a>@bulmaio</a>.
-                        <a href="#">#css</a> <a href="#">#responsive</a>
-                        <br>
-                        <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                    </div>
+                <div class="content">
+                    Lorem ipsum dolor sit amet, <a>@bulmaio</a>.
+                    <a href="#">#css</a> <a href="#">#responsive</a>
+                    <br>
+                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 </body>
 </html>
