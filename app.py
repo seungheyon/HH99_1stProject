@@ -106,7 +106,7 @@ def api_login():
         return jsonify({'result': 'success', 'token': token.decode('utf-8')})  # pyJWT 1.7이라면 .decode('utf-8') 추가
 
     else:
-        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+        return jsonify({'result': 'fail', 'msg': '아이디와 비밀번호를 입력해주세요'})
 
 
 # 아이디 중복확인 API
