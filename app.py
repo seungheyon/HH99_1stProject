@@ -197,10 +197,11 @@ def channel_page():
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        is_category = bool(db.categories.find_one({'category': category_receive, 'id': payload['id']}))
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
-    return render_template('channel.html', category=category_receive)
+    return render_template('channel.html', category=category_receive, is_category=is_category)
 
 
 # 카테고리의 채널 조회

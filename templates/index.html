@@ -90,6 +90,8 @@
 
         .card-columns {
             text-align: center;
+            width: 70%;
+            margin : auto;
         }
 
         .btn-group-lg > .btn, .btn-lg {
@@ -104,6 +106,14 @@
             height: auto;
             max-width: 10%;
             margin-left: -20px;
+        }
+
+        .wrap{
+            margin-bottom: 60px;
+        }
+
+        .card{
+            margin:20px
         }
     </style>
 
@@ -204,20 +214,22 @@
     </div>
 </section>
 <hr class="hr">
+<div class="wrap">
+    <div class="category">
+        <div class="input-group mb-3">
+            <input id="new_category" type="text" class="form-control" placeholder="만들고 싶은 카테고리를 입력하세요"
+                   aria-describedby="button-addon2">
+            <button onclick="new_category()" class="btn btn-outline-secondary" type="button" id="button-addon2"><i
+                    class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
 
-<div class="category">
-    <div class="input-group mb-3">
-        <input id="new_category" type="text" class="form-control" placeholder="만들고 싶은 카테고리를 입력하세요"
-               aria-describedby="button-addon2">
-        <button onclick="new_category()" class="btn btn-outline-secondary" type="button" id="button-addon2"><i
-                class="fa fa-plus" aria-hidden="true"></i>
-        </button>
+    <div id="category_list" class="card-columns">
+
+
     </div>
 </div>
-
-<div id="category_list" class="card-columns">
-</div>
-
 
 </div>
 

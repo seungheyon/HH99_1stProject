@@ -210,6 +210,18 @@
             });
         }
 
+        // 채널 즐겨찾기 추가 혹은 취소
+        function starChannel(channel_id){
+            $.ajax({
+                type: 'POST',
+                url: '/api/update_like',
+                data: {channel_id: channel_id},
+                success: function (response) {
+                    showChannels();
+                }
+            });
+        }
+
         // 채널 조회
         function showChannels() {
             let category = "{{ category }}"
@@ -228,6 +240,7 @@
                         let url = channels[i]['channel_url']
                         let desc = channels[i]['channel_desc']
                         let channel_id = channels[i]['_id']
+                        let class_star = channels[i]["channel_star"]? "fa-star" : "fa-star-o"
 
                         temp_html = `<div class="card column is-narrow">
                             <div class="card-image">
@@ -246,7 +259,7 @@
                             </div>
                             <div class="card-icon">
                                 <a onclick="openUpdateForm('${channel_id}', '${name}', '${desc}')"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                <a href=""><i class="fa fa-star-o" aria-hidden="true"></i></a>
+                                <a onclick="starChannel('${channel_id}')"><i class="fa ${class_star}" aria-hidden="true"></i></a>
                             <div>
                           </div>`
                         $('#channels-box').append(temp_html);
@@ -257,6 +270,11 @@
         }
 
         $(document).ready(function () {
+            let is_category = '{{ is_category }}';
+            if (is_category=='False'){
+                alert('존재하지 않는 카테고리입니다');
+                window.location.href="/";
+            }
             showChannels();
         });
 
@@ -267,7 +285,10 @@
 <div class="wrap">
     <!--상단 배너-->
     <section class="banner">
+        <a href="/"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+
         <div class="banner-body">
+
             <p class="title">
                 {{ category }}
             </p>
@@ -330,29 +351,6 @@
     <!-- 채널 목록 -->
     <div class="card-box columns is-multiline" id="channels-box">
 
-        <div class="card column is-narrow">
-            <div class="card-image">
-                <figure class="image is-4by3">
-                    <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-                </figure>
-            </div>
-            <div class="card-content">
-                <div class="media">
-
-                    <div class="media-content">
-                        <p class="title is-4">John Smith</p>
-                        <p class="subtitle is-6">@johnsmith</p>
-                    </div>
-                </div>
-
-                <div class="content">
-                    Lorem ipsum dolor sit amet, <a>@bulmaio</a>.
-                    <a href="#">#css</a> <a href="#">#responsive</a>
-                    <br>
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
