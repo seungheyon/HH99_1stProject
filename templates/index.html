@@ -9,10 +9,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://use.typekit.net/qtl6tnh.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
@@ -59,10 +70,11 @@
         }
 
         .category {
+            width: 600px;
             margin: auto;
-            width: 40%;
-        }
+            padding: 50px;
 
+        }
     </style>
 
     <script>
@@ -76,51 +88,75 @@
 
         {#카테고리 서버에서 불러오는 함수#}
         $(document).ready(function () {
-            get_categorys();
+            $('#new_category').empty()
+            view_category();
         });
 
         {#카테고리 작성 함수#}
 
-        function post() {
-            let category = $("#category-input").val()
+        function new_category() {
+            let category = $('#new_category').val();
+            if (category == "") {
+                alert('카테고리를 입력하세요')
+                return;
+            }
+
             $.ajax({
                 type: "POST",
-                url: "/posting",
-                data: {
-                    category_give: category
-                },
+                url: "/api/new_category",
+                data: {category_give: category},
+
                 success: function (response) {
-                    if (response['result'] == 'success') {
-                        alert(response['msg'])
-                        window.location.reload()
-                    }
+                    alert(response['msg'])
+                    window.location.reload();
+
                 }
+
             })
         }
 
         {#저장된 카테고리 불러오는 함수#}
 
-        function get_categorys() {
-            $("#category-box").empty()
+        function view_category() {
+            // 카테고리 목록 보기 API 연결
             $.ajax({
                 type: "GET",
-                url: "/get_category",
+                url: "/api/new_category",
                 data: {},
                 success: function (response) {
-                    if (response["result"] == "success") {
-                        let categorys = response["all_category"]
-                        for (let i = 0; i < categorys.length; i++) {
-                            let category = categorys[i]
-                            {#let time_post = new Date(post["date"])#}
-                            let html_temp = `<div class="notification is-danger">
-                                                    <button class="delete"></button>
-                                                    <a>${category}</a>
-                                                </div>`
-                            $("#category-box").append(html_temp)
-                        }
+                    let categories = response['all_categories'];
+                    for (let i = 0; i < categories.length; i++) {
+                        let category = categories[i]['category'];
+
+                        temp_html = `<div class="card border-light mb-3" style="max-width: 18rem;">
+                                            <div class="card-header">
+                                                <button id="btn-delete" class="btn btn-sparta btn-lg" onclick="delete_category('${category}')">
+                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-body">
+                                                <a class="card-title"  href="/channel/<keyword>"> ${category} </a>
+                                            </div>
+                                        </div>`
+
                     }
+                    $('#category_list').append(temp_html)
+
                 }
             })
+        }
+
+        function delete_category(category) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/delete_category',
+                data: {category_give: category},
+                {#data: { category_give: "{{ category }}" } ,#}
+                success: function (response) {
+                    alert(response['msg']);
+                    window.location.reload();
+                }
+            });
         }
     </script>
 
@@ -140,31 +176,23 @@
 </section>
 <hr class="hr">
 
-<div class="field is-grouped">
-    <p class="control is-expanded">
-        <input id="category-input" class="input" type="text" placeholder="만들고 싶은 카테고리의 이름을 입력해 주세요">
-    </p>
-    <p class="control">
-        <a class="button is-info is-danger" onclick="post()">
-            추가하기
-        </a>
-    </p>
+<div class="category">
+    <div class="input-group mb-3">
+        <input id="new_category" type="text" class="form-control" placeholder="만들고 싶은 카테고리를 입력하세요"
+               aria-describedby="button-addon2">
+        <button onclick="new_category()" class="btn btn-outline-secondary" type="button" id="button-addon2"><i
+                class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+    </div>
 </div>
 
-<div class="category category-box">
+<div id="category_list" class="card-columns">
+</div>
 
-            <span class="tag is-danger is-large">
-                주제
-                <button class="delete"></button>
-            </span>
-
-    <div class="notification is-danger">
-        <button class="delete"></button>
-        <a>먹방</a>
-    </div>
 
 </div>
 
 
 </body>
-</html>
+
+</html>A

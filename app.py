@@ -144,6 +144,27 @@ def api_valid():
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
+# 카테고리 등록하
+@app.route('/api/new_category', methods=['POST'])
+def new_category():
+    category_receive = request.form['category_give']
+
+    doc = {'category': category_receive}
+    db.categories.insert_one(doc)
+    return jsonify({'msg': '카테고리가 저장되었습니다! '})
+
+# 카테고리 목록보기(Read) API
+@app.route('/api/new_category', methods=['GET'])
+def view_category():
+    categories = list(db.categories.find({}, {'_id': False}))
+    return jsonify({'result': 'success', 'all_categories': categories})
+
+# 카테고리 삭제하기
+@app.route('/api/delete_category', methods=['POST'])
+def delete_category():
+    category_receive = request.form['category_give']
+    db.categories.delete_one({'category': category_receive})
+    return jsonify({'result': 'success', 'msg': f'{category_receive} 삭제되었습니다 ! '})
 
 # 채널 페이지로 이동
 @app.route('/channel')
