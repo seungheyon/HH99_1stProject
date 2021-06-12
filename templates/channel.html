@@ -19,6 +19,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 
+    <link rel="icon" href="{{ url_for('static', filename='small_logo.png') }}" type="image/png">
+
+        <meta property="og:title" content="MyTube" />
+    <meta property="og:description" content="유투브 카테고리 기능을 당신에게" />
+    <meta property="og:image" content="{{ url_for('static', filename='ogimage.jpg') }}" />
+
     <style>
         .wrap {
             width: 1000px;

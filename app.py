@@ -6,8 +6,8 @@ from bson.objectid import ObjectId
 
 app = Flask(__name__)
 
-client = MongoClient('localhost', 27017)
-# client = MongoClient('AWS 아이디', 27017, username="test", password="test")
+# client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://3.35.16.65', 27017, username="test", password="test")
 db = client.mytube
 
 SECRET_KEY = 'mytube'
@@ -60,11 +60,13 @@ def get_posts():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
+
 # 첫 페이지 - 로그인 화면
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
+
 
 # 회원가입 페이지
 @app.route('/register')
@@ -103,7 +105,7 @@ def api_login():
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
-        return jsonify({'result': 'success', 'token': token.decode('utf-8')})  # pyJWT 1.7이라면 .decode('utf-8') 추가
+        return jsonify({'result': 'success', 'token': token})  # pyJWT 1.7이라면 .decode('utf-8') 추가
 
     else:
         return jsonify({'result': 'fail', 'msg': '아이디와 비밀번호를 입력해주세요'})
@@ -132,7 +134,7 @@ def api_valid():
 
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        print(payload) # payload 확인용
+        print(payload)  # payload 확인용
 
         # 닉네임 보내주기
         userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
@@ -143,6 +145,7 @@ def api_valid():
 
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
+
 
 # 카테고리 등록하기
 @app.route('/api/new_category', methods=['POST'])
@@ -251,7 +254,7 @@ def channel_save():
                'channel_url': ogUrl,
                'channel_category': category_receive,
                'channel_desc': desc_receive,
-               'channel_star': False }
+               'channel_star': False}
         db.channel.insert_one(doc)
 
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
