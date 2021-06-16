@@ -56,3 +56,4 @@ http://firstquarter.shop/
 <br>
 
 ## 5. 개인 회고
+최민서 : https://doing7.tistory.com/86
