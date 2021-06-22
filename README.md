@@ -56,4 +56,5 @@ http://firstquarter.shop/
 <br>
 
 ## 5. 개인 회고
-최민서 : https://doing7.tistory.com/86
+최민서 : https://doing7.tistory.com/86   
+양현정 : https://velog.io/@hyunjung/WEEK01%ED%9A%8C%EA%B3%A0%EB%A1%9D
