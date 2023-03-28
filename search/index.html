@@ -107,8 +107,9 @@
     </div>
 </div>
     <br>
-    <input class="btn btn-dark" type="submit" value="수정하기">
-    <input class="btn btn-dark" type="submit" value="삭제하기">
+    
+    <a href="{{url_for('board_edit', idx=result.id)}}">글수정</a>
+    <a href="{{url_for('board_delete', idx=result.id)}}">글삭제</a>
 
     <div class = "mtcards" id = "comment-list"></div>
 
