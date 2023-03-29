@@ -106,14 +106,14 @@
                 top: 150px;
                 left: 10px;
                 transform: translate(0%, 50%);
-                width: 350px;
+                width: 400px;
                 height: 100px;
             }
 
             .search-bar input {
                 width: 70%;
                 height: 35px;
-                font-size: 28px;
+                font-size: 20px;
                 border: none;
                 border-bottom: 2px solid white;
                 background: transparent;
@@ -218,7 +218,7 @@
 
                         let star_repeat = ' ⭐ '.repeat(star)
 
-                        let temp_html = `<div class="row g-0">
+                        let temp_html = `<div class="rowg-0">
                                             <div class="col-md-12">
                                                 <img src="${image}"
                                                     class="img-fluid rounded-start" alt="...">
@@ -273,6 +273,24 @@
                 document.querySelector('.modal_close').addEventListener('click', offClick);
 
             };
+            
+            // 검색 기능
+            $(document).on("keyup", "#searchInput", function () {   // 입력칸에 keyup 이벤트 발생 시
+                //$("#lectureTable > tbody > tr").hide();
+                //$(".sRow").hide();
+                $(".rowg-0").hide();                
+                //$(temp).parent().parent().parent().siblings().hide();
+                var cVal = $("#searchInput").val();
+                var temp = $(" #cards-box > div > div > div > h5:contains(" + cVal + ")");
+                //#cards-box > div:nth-child(1) > div:nth-child(2) > div > h5
+                selector = $(temp).parent().parent().parent();
+                console.log($(".rowg-0"));
+                //$(selector).siblings().hide();
+                
+                $(selector).show();
+                                
+                //var temp = $("#lectureTable > tbody > tr > td:eq(3):contains("+ cVal +")");                
+            })
         </script>
     </head>
 
@@ -286,8 +304,8 @@
         <h1 style="color: white;">소셜커머스 상품 리뷰 공간</h1>
         <!-- 검색기능 -->
         <div class="search-bar">
-            <input type="text" name="query" value="">
-            <button type="submit">검색</button>
+            <input id="searchInput" type="text" name="query" value="" placeholder="상품명, 쇼핑몰, 가격으로 검색">
+            <button id="searchBtn" type="submit">검색</button>
         </div>
         <!-- 리뷰 등록 입력 정보-->
         <button class="review-btn" id="modal_btn" onclick="open_box()">리뷰 등록</button>
@@ -335,7 +353,7 @@
     <div class="mycards">
         <div class="row row-cols-1 row-cols-md-5 g-4" id="cards-box">
             <div class="card mb-3" style="max-width: 540px; padding: 0;">
-                <div class="row g-0">
+                <div class="rowg-0">
                     <div class="col-md-12">
                         <img src="https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/f0d8/9fb3aa6b92db05f0f8f86e995df3f57c7737ff076560738e9e7571e9cd40.jpg"
                             class="img-fluid rounded-start" alt="...">
@@ -352,7 +370,7 @@
                 </div>
             </div>
             <div class="card mb-3" style="max-width: 540px; padding: 0;">
-                <div class="row g-0">
+                <div class="rowg-0">
                     <div class="col-md-12">
                         <img src="https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/f0d8/9fb3aa6b92db05f0f8f86e995df3f57c7737ff076560738e9e7571e9cd40.jpg"
                             class="img-fluid rounded-start" alt="...">
@@ -369,7 +387,7 @@
                 </div>
             </div>
             <div class="card mb-3" style="max-width: 540px; padding: 0;">
-                <div class="row g-0">
+                <div class="rowg-0">
                     <div class="col-md-12">
                         <img src="https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/f0d8/9fb3aa6b92db05f0f8f86e995df3f57c7737ff076560738e9e7571e9cd40.jpg"
                             class="img-fluid rounded-start" alt="...">
@@ -386,7 +404,7 @@
                 </div>
             </div>
             <div class="card mb-3" style="max-width: 540px; padding: 0;">
-                <div class="row g-0">
+                <div class="rowg-0">
                     <div class="col-md-12">
                         <img src="https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/f0d8/9fb3aa6b92db05f0f8f86e995df3f57c7737ff076560738e9e7571e9cd40.jpg"
                             class="img-fluid rounded-start" alt="...">
@@ -403,7 +421,7 @@
                 </div>
             </div>
             <div class="card mb-3" style="max-width: 540px; padding: 0;">
-                <div class="row g-0">
+                <div class="rowg-0">
                     <div class="col-md-12">
                         <img src="https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/f0d8/9fb3aa6b92db05f0f8f86e995df3f57c7737ff076560738e9e7571e9cd40.jpg"
                             class="img-fluid rounded-start" alt="...">
