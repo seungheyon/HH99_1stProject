@@ -13,11 +13,11 @@ def home():
 	return render_template('index.html')
 
 
-@app.route("/surching", methods=["POST"])
+@app.route("/search", methods=["POST"])
 def surching_post():
 
     url_receive = request.form['url_give']
-    comment_receive = request.form['comment_give']
+    review_receive = request.form['review_give']
     star_receive = request.form['star_give']
 
     headers = {
@@ -25,60 +25,60 @@ def surching_post():
     data = requests.get(url_receive, headers=headers)
 
     soup = BeautifulSoup(data.text, 'html.parser')
-    
-    #웹 크롤링을 하는데 같은 사이트에서 크롤링을 하지 않고 다른 사이트에서 같은 데이터값을 가져오는 코드를 모르겠어요..
-    ogimage = soup.select_one('meta[property="og:image"]')['content']
+
     ogtitle = soup.select_one('meta[property="og:title"]')['content']
+    ogdesc = soup.select_one('meta[property="og:description"]')['content']
+    ogimage = soup.select_one('meta[property="og:image"]')['content']
 
 
     doc = {
 	    'title':ogtitle,
+        'desc':ogdesc,
 	    'star':star_receive,
 		'image':ogimage,
-		'url': url_receive,
-        'comment':comment_receive
+        'review':review_receive
     }
 
     db.mini.insert_one(doc)
 
-    return jsonify({'msg':'저장완료!'})
+    return jsonify({'msg':'리뷰저장완료!'})
 
 
-@app.route("/surching", methods=["GET"])
+@app.route("/search", methods=["GET"])
 def surching_get():
 	all_comments = list(db.mini.find({},{'_id':False}))
 	return jsonify({'result':all_comments})
 
-# 수정
-@app.route("/post/<int:question_id>/", methods=["GET","POST"])
-@login_required# 로그인필요
-def post(question_id):
-    question = Question.query.get_or_404(question_id)
-    if g.user != question.user:
-        flash('수정권한이 없습니다')# 로그인 사용자와 수정 작성자가 같지 않을 때
-        return redirect(url_for('question.detail', question_id=question_id))
-    if request.method == 'POST':  # POST 요청
-        form = post_modify()
-        if form.validate_on_submit():
-            form.populate_obj(question)
-            question.modify_date = datetime.now()  # 수정일시 저장
-            db.session.commit()
-            return redirect(url_for('question.detail', question_id=question_id))
-    else:  # GET 요청
-        form = post_modify(obj=question)
-    return render_template('question/question_form.html', form=form)
+# # 수정
+# @app.route("/post_modify/<int:question_id>/", methods=["GET","POST"])
+# @login_required# 로그인필요
+# def modify(question_id):
+#     question = Question.query.get_or_404(question_id)
+#     if g.user != question.user:
+#         flash('수정권한이 없습니다')# 로그인 사용자와 수정 작성자가 같지 않을 때
+#         return redirect(url_for('question.detail', question_id=question_id))
+#     if request.method == 'POST':  # POST 요청
+#         form = post_modify()
+#         if form.validate_on_submit():
+#             form.populate_obj(question)
+#             question.modify_date = datetime.now()  # 수정일시 저장
+#             db.session.commit()
+#             return redirect(url_for('question.detail', question_id=question_id))
+#     else:  # GET 요청
+#         form = post_modify(obj=question)
+#     return render_template('question/question_form.html', form=form)
 
-#삭제
-@app.route('/delete/<int:id>/', methods=['POST'])
-@login_required
-def delete(question_id):
-    question = Question.query.get_or_404(question_id)
-    if g.user != question.user:
-        flash('삭제권한이 없습니다')# 로그인 사용자와 수정 작성자가 같지 않을 때
-        return redirect(url_for('question.detail', question_id=question_id))
-    db.session.delete(question)
-    db.session.commit()
-    return redirect(url_for('question._list'))
+# #삭제
+# @app.route('/delete/<int:id>/', methods=['POST'])
+# @login_required
+# def delete(question_id):
+#     question = Question.query.get_or_404(question_id)
+#     if g.user != question.user:
+#         flash('삭제권한이 없습니다')# 로그인 사용자와 수정 작성자가 같지 않을 때
+#         return redirect(url_for('question.detail', question_id=question_id))
+#     db.session.delete(question)
+#     db.session.commit()
+#     return redirect(url_for('question._list'))
 	
     
 
