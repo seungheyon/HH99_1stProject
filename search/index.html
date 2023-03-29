@@ -171,13 +171,13 @@
             .modal_wrap {
                 display: none;
                 width: 500px;
-                height: 500px;
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 margin: -250px 0 0 -250px;
                 background: #eee;
                 z-index: 2;
+                border-radius: 15px;
             }
 
             .black_bg {
@@ -210,7 +210,6 @@
                     $('#cards-box').empty()
                     rows.forEach((a) => {
                         let title = a['title']
-                        let brand = a['brand']
                         let image = a['image']
                         let star = a['star']
                         let review = a['review']
@@ -238,14 +237,12 @@
 
             function posting() {
                 let title = $('#title').val();
-                let brand = $('#brand').val();
                 let url = $('#url').val();
                 let star = $('#star').val();
                 let review = $('#review').val();
 
                 let formData = new FormData();
                 formData.append("title_give", title);
-                formData.append("brand_give", brand);
                 formData.append("url_give", url);
                 formData.append("star_give", star)
                 formData.append("review_give", review);
@@ -299,17 +296,6 @@
                     <div class="form-floating mb-1">
                         <input type="" id="title" class="form-control" placeholder="Please write the product name">
                         <label>상품명</label>
-                    </div>
-                    <div class="input-group mb-1">
-                        <label class="input-group-text" for="inputGroupSelect01">소셜커머스</label>
-                        <select class="form-select" id="brand">
-                            <option selected>-- 선택하기 --</option>
-                            <option value="쿠팡">쿠팡</option>
-                            <option value="11번가">11번가</option>
-                            <option value="옥션">옥션</option>
-                            <option value="티몬">티몬</option>
-                            <option value="위메프">위메프</option>
-                        </select>
                     </div>
                     <div class="form-floating mb-1">
                         <input id="url" type="email" class="form-control" placeholder="www.coupang.com">
