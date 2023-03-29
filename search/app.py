@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, flash#팝업창을 띄어줌
 app = Flask(__name__)
 
 from pymongo import MongoClient
@@ -12,8 +12,10 @@ from bs4 import BeautifulSoup
 def home():
 	return render_template('index.html')
 
+
 @app.route("/surching", methods=["POST"])
 def surching_post():
+
     url_receive = request.form['url_give']
     comment_receive = request.form['comment_give']
     star_receive = request.form['star_give']
@@ -23,7 +25,8 @@ def surching_post():
     data = requests.get(url_receive, headers=headers)
 
     soup = BeautifulSoup(data.text, 'html.parser')
-
+    
+    #웹 크롤링을 하는데 같은 사이트에서 크롤링을 하지 않고 다른 사이트에서 같은 데이터값을 가져오는 코드를 모르겠어요..
     ogimage = soup.select_one('meta[property="og:image"]')['content']
     ogtitle = soup.select_one('meta[property="og:title"]')['content']
 
@@ -46,51 +49,38 @@ def surching_get():
 	all_comments = list(db.mini.find({},{'_id':False}))
 	return jsonify({'result':all_comments})
 
-#로그인 했을 때 글 작성한 사람과 수정하려는 사람이 같을 때만 수정 가능
-@app.route("/edit/<idx>", methods=["GET", "POST"])
-def board_edit(idx):
-    board = mongo.db.board
-    data = board.find_one({"_id": ObjectId(idx)}) 
-    if request.method == "GET":
-        if data is None:
-            flash("해당 게시물이 존재하지 않습니다.")
-            return redirect(url_for("lists"))
-        else:
-            if session.get("id") == data.get("writer_id"):
-                return render_template("edit.html", data=data)
-            else:
-                flash("글 수정 권한이 없습니다.")
-                return redirect(url_for("board_list"))
-    else:
-        title = request.form.get("title")
-        contents = request.form.get("contents")
-        # 또 한번 더 확인,
-        if session.get("id") == data.get('writer_id'):
-            board.update_one({"_id": ObjectId(idx)}, {
-                "$set": {
-                    "title": title,
-                    "contents": contents,
-                }
-            })
-            flash("수정되었습니다.")
-            return redirect(url_for("board_view", idx=idx))
-        else:
-            flash("글 수정 권한이 없습니다.")
-            return redirect(url_for("board_list"))
-        
+# 수정
+@app.route("/post/<int:question_id>/", methods=["GET","POST"])
+#@login_required# 로그인필요
+def post(question_id):
+    question = Question.query.get_or_404(question_id)
+    if g.user != question.user:
+        flash('수정권한이 없습니다')# 로그인 사용자와 수정 작성자가 같지 않을 때
+        return redirect(url_for('question.detail', question_id=question_id))
+    if request.method == 'POST':  # POST 요청
+        form = post_modify()
+        if form.validate_on_submit():
+            form.populate_obj(question)
+            question.modify_date = datetime.now()  # 수정일시 저장
+            db.session.commit()
+            return redirect(url_for('question.detail', question_id=question_id))
+    else:  # GET 요청
+        form = post_modify(obj=question)
+    return render_template('question/question_form.html', form=form)
 
-#삭제 기능        
-@app.route("/delete/<idx>")
-def board_delete(idx):
-    board = mongo.db.board
-    data = board.find_one({"_id": ObjectId(idx)})
-    if session.get("id") == data.get("writer_id"):
-        board.delete_one({"_id": ObjectId(idx)})
-        flash("삭제 되었습니다.")
-    else:
-        flash("삭제 권한이 없습니다.")
-    return redirect(url_for("board_list"))
-
+#삭제
+@app.route('/delete/<int:id>/', methods=['POST'])
+#@login_required
+def delete(question_id):
+    question = Question.query.get_or_404(question_id)
+    if g.user != question.user:
+        flash('삭제권한이 없습니다')# 로그인 사용자와 수정 작성자가 같지 않을 때
+        return redirect(url_for('question.detail', question_id=question_id))
+    db.session.delete(question)
+    db.session.commit()
+    return redirect(url_for('question._list'))
+	
+    
 
 if __name__ == '__main__':
 	app.run('0.0.0.0', port=5000, debug=True)
