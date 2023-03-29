@@ -12,8 +12,10 @@ from bs4 import BeautifulSoup
 def home():
 	return render_template('index.html')
 
+
 @app.route("/surching", methods=["POST"])
 def surching_post():
+
     url_receive = request.form['url_give']
     comment_receive = request.form['comment_give']
     star_receive = request.form['star_give']
@@ -48,26 +50,26 @@ def surching_get():
 	return jsonify({'result':all_comments})
 
 # 수정
-@app.route("/surching", methods=["GET","POST"])
+@app.route("/post/<int:question_id>/", methods=["GET","POST"])
 @login_required# 로그인필요
-def modify(question_id):
+def post(question_id):
     question = Question.query.get_or_404(question_id)
     if g.user != question.user:
         flash('수정권한이 없습니다')# 로그인 사용자와 수정 작성자가 같지 않을 때
         return redirect(url_for('question.detail', question_id=question_id))
     if request.method == 'POST':  # POST 요청
-        form = QuestionForm()
+        form = post_modify()
         if form.validate_on_submit():
             form.populate_obj(question)
             question.modify_date = datetime.now()  # 수정일시 저장
             db.session.commit()
             return redirect(url_for('question.detail', question_id=question_id))
     else:  # GET 요청
-        form = QuestionForm(obj=question)
+        form = post_modify(obj=question)
     return render_template('question/question_form.html', form=form)
 
 #삭제
-@app.route("/surching")
+@app.route('/delete/<int:id>/', methods=['POST'])
 @login_required
 def delete(question_id):
     question = Question.query.get_or_404(question_id)
@@ -78,7 +80,7 @@ def delete(question_id):
     db.session.commit()
     return redirect(url_for('question._list'))
 	
-
+    
 
 if __name__ == '__main__':
 	app.run('0.0.0.0', port=5000, debug=True)
