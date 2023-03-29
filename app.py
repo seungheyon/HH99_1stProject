@@ -46,8 +46,8 @@ def surching_post():
 
 @app.route("/search", methods=["GET"])
 def surching_get():
-	all_comments = list(db.mini.find({},{'_id':False}))
-	return jsonify({'result':all_comments})
+	all_mini = list(db.mini.find({},{'_id':False}))
+	return jsonify({'result':all_mini})
 
 # # 수정
 # @app.route("/post_modify/<int:question_id>/", methods=["GET","POST"])
