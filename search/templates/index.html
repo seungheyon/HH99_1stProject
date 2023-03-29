@@ -273,24 +273,26 @@
                 document.querySelector('.modal_close').addEventListener('click', offClick);
 
             };
-            
-            // 검색 기능
+
+            // 검색 기능(keyup)
             $(document).on("keyup", "#searchInput", function () {   // 입력칸에 keyup 이벤트 발생 시
-                //$("#lectureTable > tbody > tr").hide();
-                //$(".sRow").hide();
-                $(".rowg-0").hide();                
-                //$(temp).parent().parent().parent().siblings().hide();
+                $(".rowg-0").hide();
                 var cVal = $("#searchInput").val();
                 var temp = $(" #cards-box > div > div > div > h5:contains(" + cVal + ")");
-                //#cards-box > div:nth-child(1) > div:nth-child(2) > div > h5
                 selector = $(temp).parent().parent().parent();
-                console.log($(".rowg-0"));
-                //$(selector).siblings().hide();
-                
+                //console.log($(".rowg-0"));
                 $(selector).show();
-                                
-                //var temp = $("#lectureTable > tbody > tr > td:eq(3):contains("+ cVal +")");                
             })
+            // 검색 기능(Button Click)
+            $(document).on("click", "#searchBtn", function () {
+                $(".rowg-0").hide();
+                var cVal = $("#searchInput").val();
+                var temp = $(" #cards-box > div > div > div > h5:contains(" + cVal + ")");
+                selector = $(temp).parent().parent().parent();
+                //console.log($(".rowg-0"));
+                $(selector).show();
+            });
+
         </script>
     </head>
 
@@ -350,6 +352,7 @@
         </div>
     </div>
     <!-- 리뷰 폼 -->
+    <!-- 검색기능 때문에 각 카드 클래스 "row g-0" 에서 "rowg-0" 으로 바꿈 -->
     <div class="mycards">
         <div class="row row-cols-1 row-cols-md-5 g-4" id="cards-box">
             <div class="card mb-3" style="max-width: 540px; padding: 0;">
