@@ -1,200 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+    <title>hanghae99_Searchin-community</title>
 
-        <title>hanghae99_Searchin-community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-        <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
 
-        <style>
-            * {
-                font-family: 'Gowun Dodum', sans-serif;
-            }
+        body {
+            background: linear-gradient(to right, #DFA67B, #FFD966);
+        }
 
-            body {
-                background: linear-gradient(to right, #DFA67B, #FFD966);
-            }
+        .mytitle {
+            width: 100%;
+            height: 250px;
 
-            .mytitle {
-                width: 100%;
-                height: 250px;
+            background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.5)), url('A9907E');
+            background-position: center;
+            background-size: cover;
 
-                background-image: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.5)), url('A9907E');
-                background-position: center;
-                background-size: cover;
+            color: white;
 
-                color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
+        .mytitle .menu-btn {
+            position: absolute;
+            width: 150px;
+            top: 30px;
+            left: 10px;
+            transform: translate(0%, -50%);
+            font-size: 20px;
+            color: white;
+            z-index: 2;
+            text-align: center;
+            background-color: transparent;
+            color: white;
 
-            .mytitle .menu-btn {
-                position: absolute;
-                width: 150px;
-                top: 30px;
-                left: 10px;
-                transform: translate(0%, -50%);
-                font-size: 20px;
-                color: white;
-                z-index: 2;
-                text-align: center;
-                background-color: transparent;
-                color: white;
+            border-radius: 50px;
+            border: 1px solid white;
+        }
 
-                border-radius: 50px;
-                border: 1px solid white;
-            }
+        .mytitle .community-btn {
+            position: absolute;
+            width: 150px;
+            top: 30px;
+            left: 170px;
+            transform: translate(0%, -50%);
+            font-size: 20px;
+            color: white;
+            z-index: 2;
+            text-align: center;
+            background-color: transparent;
+            color: white;
 
-            .mytitle .community-btn {
-                position: absolute;
-                width: 150px;
-                top: 30px;
-                left: 170px;
-                transform: translate(0%, -50%);
-                font-size: 20px;
-                color: white;
-                z-index: 2;
-                text-align: center;
-                background-color: transparent;
-                color: white;
+            border-radius: 50px;
+            border: 1px solid white;
+        }
 
-                border-radius: 50px;
-                border: 1px solid white;
-            }
+        .mytitle .review-btn:hover,
+        .menu-btn:hover,
+        .community-btn:hover {
+            border: 2px solid white;
+        }
 
-            .mytitle .review-btn:hover,
-            .menu-btn:hover,
-            .community-btn:hover {
-                border: 2px solid white;
-            }
+        .search-bar {
+            position: absolute;
+            top: 150px;
+            left: 10px;
+            transform: translate(0%, 50%);
+            width: 350px;
+            height: 100px;
+        }
 
-            .search-bar {
-                position: absolute;
-                top: 150px;
-                left: 10px;
-                transform: translate(0%, 50%);
-                width: 350px;
-                height: 100px;
-            }
+        .search-bar input {
+            width: 70%;
+            height: 35px;
+            font-size: 28px;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+        }
 
-            .search-bar input {
-                width: 70%;
-                height: 35px;
-                font-size: 28px;
-                border: none;
-                border-bottom: 2px solid white;
-                background: transparent;
-            }
+        .search-bar button {
+            font-size: 23px;
+            width: 60px;
+            height: 40px;
+            cursor: pointer;
+            background-color: transparent;
+            color: white;
+            border-radius: 10px;
+            border: 1px solid white;
+        }
 
-            .search-bar button {
-                font-size: 23px;
-                width: 60px;
-                height: 40px;
-                cursor: pointer;
-                background-color: transparent;
-                color: white;
-                border-radius: 10px;
-                border: 1px solid white;
-            }
+        .search-bar>button:hover {
+            border: 2px solid white;
+        }
 
-            .search-bar>button:hover {
-                border: 2px solid white;
-            }
+        .mypic {
+            width: 100%;
+            height: 300px;
 
-            .mypic {
-                width: 100%;
-                height: 300px;
+            background-image: linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.5),
+                    rgba(0, 0, 0, 0.5)),
+                url("https://mblogthumb-phinf.pstatic.net/MjAyMDAxMTVfMjg0/MDAxNTc5MDYxNTU4Nzg0.NA_O7UuZgKsGv2SgnLOKX1w5zWu0yWzd8-d3v5k9m7sg.XYImnhk_jqa5xs-d1IcpjzvW8xr16wPPAu5rzFSNdfQg.JPEG.sky_full_moon/KakaoTalk_Moim_4zmq7IWYG2pqPKjQ3E2Q77UwCqEYXU.jpg?type=w800");
+            background-position: center 30%;
+            background-size: cover;
 
-                background-image: linear-gradient(0deg,
-                        rgba(0, 0, 0, 0.5),
-                        rgba(0, 0, 0, 0.5)),
-                    url("https://mblogthumb-phinf.pstatic.net/MjAyMDAxMTVfMjg0/MDAxNTc5MDYxNTU4Nzg0.NA_O7UuZgKsGv2SgnLOKX1w5zWu0yWzd8-d3v5k9m7sg.XYImnhk_jqa5xs-d1IcpjzvW8xr16wPPAu5rzFSNdfQg.JPEG.sky_full_moon/KakaoTalk_Moim_4zmq7IWYG2pqPKjQ3E2Q77UwCqEYXU.jpg?type=w800");
-                background-position: center 30%;
-                background-size: cover;
+            color: white;
 
-                color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
+        .mypost {
+            width: 95%;
+            max-width: 1000px;
+            margin: 20px auto 20px auto;
 
-            .mypost {
-                width: 95%;
-                max-width: 1000px;
-                margin: 20px auto 20px auto;
+            box-shadow: 0px 0px 3px 0px black;
+            padding: 20px;
+        }
 
-                box-shadow: 0px 0px 3px 0px black;
-                padding: 20px;
-            }
+        .mypost>button {
+            margin-top: 15px;
+        }
 
-            .mypost>button {
-                margin-top: 15px;
-            }
+        .mycards {
+            width: 95%;
+            max-width: 1000px;
+            margin: auto;
+        }
 
-            .mycards {
-                width: 95%;
-                max-width: 1000px;
-                margin: auto;
-            }
-
-            .mycards>.card {
-                margin-top: 10px;
-                margin-bottom: 10px;
-            }
-        </style>
-        <script>
-            $(document).ready(function () {
-                set_temp();
-                show_comment();
+        .mycards>.card {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            set_temp();
+            show_comment();
+        });
+        function set_temp() {
+            fetch("http://spartacodingclub.shop/sparta_api/weather/seoul").then((res) => res.json()).then((data) => {
+                let temp = data['temp']
+                $('#temp').text(temp)
             });
-            function set_temp() {
-                fetch("http://spartacodingclub.shop/sparta_api/weather/seoul").then((res) => res.json()).then((data) => {
-                    let temp = data['temp']
-                    $('#temp').text(temp)
-                });
-            }
-            function save_comment() {
-                let location = $('#location').val()
-                let commnet = $('#comment').val()
+        }
+        function save_comment() {
+            let location = $('#location').val()
+            let commnet = $('#comment').val()
 
 
-                let formData = new FormData();
-                formData.append("location_give", location);
-                formData.append("comment_give", commnet);
+            let formData = new FormData();
+            formData.append("location_give", location);
+            formData.append("comment_give", commnet);
 
-                fetch('/guestbook', { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
+            fetch('/guestbook', { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
 
-                    alert(data["msg"]);
-                    window.location.reload()
-                });
-            }
-            function show_comment() {
-                fetch('/guestbook').then((res) => res.json()).then((data) => {
-                    let rows = data['result']
+                alert(data["msg"]);
+                window.location.reload()
+            });
+        }
+        function show_comment() {
+            fetch('/guestbook').then((res) => res.json()).then((data) => {
+                let rows = data['result']
 
-                    $('#comment-list').empty()
-                    rows.forEach((a) => {
-                        let location = a['location']
-                        let comment = a['comment']
+                $('#comment-list').empty()
+                rows.forEach((a) => {
+                    let location = a['location']
+                    let comment = a['comment']
 
-                        let temp_html = `<div class="card">
+                    let temp_html = `<div class="card">
                                             <div class="card-body">
                                                 <blockquote class="blockquote mb-0">
                                                     <p>${comment}</p>
@@ -202,19 +201,19 @@
                                                 </blockquote>
                                             </div>
                                         </div>`
-                        $('#comment-list').append(temp_html)
-                    })
+                    $('#comment-list').append(temp_html)
                 })
-            }
-        </script>
-    </head>
+            })
+        }
+    </script>
+</head>
 
 <body>
     <div class="mytitle">
         <!-- 홈 버튼 -->
-        <button class="menu-btn" onclick="location.href = 'index.html'">홈</button>
+        <button class="menu-btn" onclick="location.href = '/'">홈</button>
         <!-- 게시판 버튼 -->
-        <button class="community-btn" onclick="location.href = 'sub.html'">공유 게시판</button>
+        <button class="community-btn" onclick="location.href = 'sub'">공유 게시판</button>
         <h1>공유 게시판</h1>
         <p>현재기온: <span id="temp">36</span>도</p>
         <!-- 검색기능 -->
@@ -265,7 +264,6 @@
             </div>
         </div>
     </div>
-</body>
 </body>
 
 </html>
