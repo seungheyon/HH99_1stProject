@@ -67,11 +67,30 @@ def surching_post():
 
     return jsonify({'msg':'리뷰저장완료!'})
 
+@app.route("/guestbook", methods=["POST"])
+def guestbook_post():
+    location_receive = request.form['location_give']
+    comment_receive = request.form['comment_give']
+
+    doc = {
+         'location':location_receive,
+         'comment':comment_receive
+    }
+
+    db.share.insert_one(doc)
+   
+    return jsonify({'msg': '공유 완료!'})
+
 
 @app.route("/search", methods=["GET"])
 def surching_get():
 	all_mini = list(db.mini.find({},{'_id':False}))
 	return jsonify({'result':all_mini})
+
+@app.route("/guestbook", methods=["GET"])
+def guestbook_get():
+    all_comment = list(db.share.find({},{'_id':False}))
+    return jsonify({'result':all_comment})
 
 ######################### 로그인, 회원가입 #################################
 
