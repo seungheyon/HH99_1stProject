@@ -12,7 +12,7 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 import certifi
 import ssl
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, make_response, render_template, request, jsonify, redirect, url_for
 from flask_jwt_extended import *
 import os
 import jwt
@@ -129,12 +129,12 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
 
 # 로그아웃
-# @app.route('/token/remove', methods=['POST'])
-# def logout():
-#     # resp = jsonify({'logout': True})
-#     resp = make_response(redirect('/'))
-#     unset_jwt_cookies(resp)
-#     return resp
+@app.route('/token/remove', methods=['POST'])
+def logout():
+   resp = jsonify({'logout': True})
+   resp = make_response(redirect('/'))
+   unset_jwt_cookies(resp)
+   return resp
 
 if __name__ == '__main__':  
    app.run('0.0.0.0',port=5000,debug=True)
