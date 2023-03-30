@@ -3,9 +3,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import certifi
 import ssl
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for
-
+from flask import Flask, make_response, render_template, request, jsonify, redirect, url_for
 from flask_jwt_extended import *
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
+
+
 import os
 import jwt
 import datetime
@@ -34,6 +36,17 @@ def home():
 def board():
 	return render_template('sub.html')
 
+
+
+############################# 사용자 검증 #################################
+# 게시글 등록 시 로그인 여부 확인
+@app.route('/check_token')
+@jwt_required
+def check_token():
+    return jsonify({'msg': 'Token is valid'})
+
+
+##########################################################################
 
 
 
@@ -116,6 +129,14 @@ def register():
    }
    dbUser.member.insert_one(doc)
    return jsonify({'msg':'가입완료'})
+
+#로그아웃
+@app.route('/token/remove', methods=['POST'])
+def logout():
+   resp = jsonify({'logout': True})
+   resp = make_response(redirect('/'))
+   unset_jwt_cookies(resp)
+   return resp
 
 # JWT 매니저 활성화
 app.config.update(DEBUG = True, JWT_SECRET_KEY = "thisissecertkey" )

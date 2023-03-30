@@ -60,11 +60,45 @@
             border: 1px solid white;
         }
 
-        .mytitle .community-btn {
+        .mytitle .community-btn  {
             position: absolute;
             width: 150px;
             top: 30px;
             left: 170px;
+            transform: translate(0%, -50%);
+            font-size: 20px;
+            color: white;
+            z-index: 2;
+            text-align: center;
+            background-color: transparent;
+            color: white;
+
+            border-radius: 50px;
+            border: 1px solid white;
+        }
+        
+        .mytitle .log_btn1 {
+            position: absolute;
+            width: 150px;
+            top: 30px;
+            left: 330px;
+            transform: translate(0%, -50%);
+            font-size: 20px;
+            color: white;
+            z-index: 2;
+            text-align: center;
+            background-color: transparent;
+            color: white;
+
+            border-radius: 50px;
+            border: 1px solid white;
+        }
+
+        .mytitle .log_btn2 {
+            position: absolute;
+            width: 150px;
+            top: 30px;
+            left: 490px;
             transform: translate(0%, -50%);
             font-size: 20px;
             color: white;
@@ -336,6 +370,49 @@
             popup.style.display = "none";
         }
 
+        // 토큰 확인(진행중)
+        function chkTkn() {
+            // JWT 토큰을 어떻게 가져올지에 따라 코드가 달라질 수 있습니다.
+            const cookies = document.cookie.split(';');
+            const tokenCookie = cookies.find(cookie => cookie.trim().startsWith('mytoken='));
+            const token = tokenCookie ? tokenCookie.split('=')[1] : null; 
+            console.log("token : ",token);
+            if (token) {
+                // JWT 토큰을 헤더에 담아 서버로 요청을 보냅니다.
+                fetch('/check_token', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // 토큰이 유효하다면 리뷰 등록 폼을 보여줍니다.
+                        open_box();
+                    })
+                    .catch(error => {
+                        // 토큰이 유효하지 않다면 로그인 폼을 보여줍니다.
+                        console.log("토큰이 있긴 있다");
+                        open_box();
+                        //alert("로그인 후 이용해 주세요!");
+                    })
+            } else {
+                // 로그인 폼을 보여줍니다.
+                console.log("토큰이 없다");
+                alert("로그인 후 이용해 주세요!");
+            }
+        }
+        
+        function logout() {
+            $.ajax({
+                type:"POST",
+                url:"/token/remove",
+                data:{},
+                success:function (response){
+                    console.log($.cookie('mytoken'));
+                    alert("로그아웃 되셨습니다.");
+                }
+            })
+        }
 
 
 
@@ -348,6 +425,10 @@
         <button class="menu-btn" onclick="location.href = '/'">홈</button>
         <!-- 게시판 버튼 -->
         <button class="community-btn" onclick="location.href = 'sub' ">공유 게시판</button>
+        <!-- 로그인 버튼 -->
+        <button class="log_btn1" onclick="location.href = '/login'">로그인</button>
+        <!-- 로그아웃 버튼 -->
+        <button class="log_btn2" onclick="logout()">로그아웃</button>
         <h1 style="color: white;">소셜커머스 상품 리뷰 공간</h1>
         <!-- 검색기능 -->
         <div class="search-bar">
@@ -355,7 +436,7 @@
             <button id="searchBtn" type="submit">검색</button>
         </div>
         <!-- 리뷰 등록 입력 정보-->
-        <button class="review-btn" id="modal_btn" onclick="open_box()">리뷰 등록</button>
+        <button class="review-btn" id="modal_btn" onclick="chkTkn()">리뷰 등록</button>
         <div class="black_bg"></div>
         <div class="modal_wrap">
             <div>
