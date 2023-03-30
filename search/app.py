@@ -12,6 +12,11 @@ from bs4 import BeautifulSoup
 def home():
 	return render_template('index.html')
 
+#공유게시판 이동
+@app.route('/sub')
+def board():
+	return render_template('sub.html')
+
 
 @app.route("/search", methods=["POST"])
 def surching_post():
