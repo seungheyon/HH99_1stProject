@@ -163,12 +163,7 @@
             set_temp();
             show_comment();
         });
-        function set_temp() {
-            fetch("http://spartacodingclub.shop/sparta_api/weather/seoul").then((res) => res.json()).then((data) => {
-                let temp = data['temp']
-                $('#temp').text(temp)
-            });
-        }
+
         function save_comment() {
             let location = $('#location').val()
             let commnet = $('#comment').val()
@@ -215,7 +210,6 @@
         <!-- 게시판 버튼 -->
         <button class="community-btn" onclick="location.href = 'sub'">공유 게시판</button>
         <h1>공유 게시판</h1>
-        <p>현재기온: <span id="temp">36</span>도</p>
         <!-- 검색기능 -->
         <div class="search-bar">
             <input type="text" name="query" value="">
