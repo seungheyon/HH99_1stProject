@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, flash#팝업창을 띄어줌
+from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
@@ -48,6 +48,7 @@ def surching_post():
 def surching_get():
 	all_mini = list(db.mini.find({},{'_id':False}))
 	return jsonify({'result':all_mini})
+
 
 # # 수정
 # @app.route("/post_modify/<int:question_id>/", methods=["GET","POST"])

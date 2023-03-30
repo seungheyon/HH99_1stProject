@@ -286,7 +286,7 @@
         <h1 style="color: white;">소셜커머스 상품 리뷰 공간</h1>
         <!-- 검색기능 -->
         <div class="search-bar">
-            <input type="text" name="query" value="">
+            <input type="text" name="keyword" id="keyword" {% if keyword != None %} value={{keyword}} {% endif %}>
             <button type="submit">검색</button>
         </div>
         <!-- 리뷰 등록 입력 정보-->
