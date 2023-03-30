@@ -41,7 +41,7 @@ def board():
 ############################# 사용자 검증 #################################
 # 게시글 등록 시 로그인 여부 확인
 @app.route('/check_token')
-@jwt_required
+#@jwt_required
 def check_token():
     return jsonify({'msg': 'Token is valid'})
 
@@ -97,7 +97,7 @@ def loginWindow():
 @app.route('/signin', methods=["POST"])
 def login():
    id_receive = request.form['id_give']
-   pwpw_receive = request.form['pwpw_give']   
+   pwpw_receive = request.form['pwpw_give']
    pwpw_hash = hashlib.sha256(pwpw_receive.encode('utf-8')).hexdigest()
    print(id_receive, pwpw_receive, pwpw_hash)
 
@@ -131,13 +131,20 @@ def register():
    return jsonify({'msg':'가입완료'})
 
 #로그아웃
-@app.route('/token/remove', methods=['POST'])
-def logout():
-   resp = jsonify({'logout': True})
-   resp = make_response(redirect('/'))
-   unset_jwt_cookies(resp)
-   return resp
+@app.route('/logout', methods=['POST'])
+def logOut():
+    access_token = request.headers.get('Authorization').split(' ')[1]
+    try:
+        decoded_token = jwt.decode(access_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        return jsonify({'msg': '토큰이 만료되었습니다.'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'msg': '유효하지 않은 토큰입니다.'}), 401
 
+    # 토큰 검증이 성공한 경우, 로그아웃 처리를 수행
+    # unset_jwt_cookies() 등의 함수를 사용하여 JWT 쿠키를 삭제할 수 있습니다.
+
+    return jsonify({'msg': '로그아웃 되었습니다.'}), 200
 # JWT 매니저 활성화
 app.config.update(DEBUG = True, JWT_SECRET_KEY = "thisissecertkey" )
 # 정보를 줄 수 있는 과정도 필요함 == 토큰에서 유저 정보를 받음
