@@ -11,7 +11,7 @@ from pymongo import MongoClient
 # from bson.json_util import dumps
 from werkzeug.security import generate_password_hash, check_password_hash
 import certifi
-# import ssl
+import ssl
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_jwt_extended import *
 import os
@@ -19,6 +19,8 @@ import jwt
 import datetime
 from bs4 import BeautifulSoup
 import hashlib
+
+
 app = Flask(__name__)
 
 
@@ -39,17 +41,19 @@ def loginWindow():
 @app.route('/signin', methods=["POST"])
 def login():
    id_receive = request.form['id_give']
-   pwpw_receive = request.form['pwpw_give']
+   pwpw_receive = request.form['pwpw_give']   
    pwpw_hash = hashlib.sha256(pwpw_receive.encode('utf-8')).hexdigest()
-   
-   result = db.member.find_one({'mail':id_receive,'pw':pwpw_hash})
+   print(id_receive, pwpw_receive, pwpw_hash)
 
-   if result is not None:
+   result = db.member.find_one({'mail':id_receive,'pw':pwpw_hash})
+   print("result[name] : ",result['name'])
+   if result['name'] is not '':
       payload = {
          'id' : id_receive,
          'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds=60*60*24)
       }
-      token = jwt.encode(payload,SECRET_KEY,algorithm='HS256').decode('utf-8')
+      token = jwt.encode(payload,SECRET_KEY,algorithm='HS256')
+      print("token : ", token)
 
       return jsonify({'result' : 'success', 'token':token})
    else:
