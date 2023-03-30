@@ -37,7 +37,7 @@ def home():
 @app.route("/login")
 def loginWindow():
    return render_template('login.html')
-
+# 로그인
 @app.route('/signin', methods=["POST"])
 def login():
    id_receive = request.form['id_give']
@@ -90,7 +90,7 @@ def api_valid():
 #     print(refresh_token)
 #     return resp, 200
 
-
+# 회원가입
 @app.route('/signup', methods=["POST"])
 def register():
    name_receive = request.form['name_give']
