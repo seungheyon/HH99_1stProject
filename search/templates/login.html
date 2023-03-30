@@ -281,13 +281,17 @@
                     id_give: id,
                     pwpw_give: pwpw
                 },
-                success: function (respose) {
-                    if (respose['result'] == 'success') {
+                success: function (response) {
+                    console.log(response);
+                    if (response['result'] == 'success') {
                         console.log('success');
+                        
+                        $.cookie('mytoken', response['token']);
                         alert("로그인 되었습니다.")
                         window.location.href='/'
-                        $.cookie('mytoken', response['token']);
                         console.log($.cookie('mytoken'));
+
+                        
                     } else {
                         console.log('failed!');
                         alert(response['msg'])
@@ -295,7 +299,7 @@
                 }
             })
         }
-        function hell(){
+        function hello(){
             $.ajax({
                 type:"GET",
                 url:"/isVal",
