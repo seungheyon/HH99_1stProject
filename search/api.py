@@ -22,7 +22,7 @@ import hashlib
 app = Flask(__name__)
 
 
-client = MongoClient('mongodb+srv://user:test@cluster0.nbgrrc7.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
+client = MongoClient('mongodb+srv://sparta:test@cluster0.agiqarx.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
 db = client.user
 
 SECRET_KEY = 'search'
@@ -30,6 +30,11 @@ SECRET_KEY = 'search'
 @app.route('/')
 def home():
    return render_template('./index.html')
+
+# 로그인 화면 이동
+@app.route("/login")
+def loginWindow():
+   return render_template('login.html')
 
 @app.route('/signin', methods=["POST"])
 def login():
