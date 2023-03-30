@@ -248,7 +248,9 @@
             z-index: 2;
             border-radius: 15px;
             padding-bottom: 40px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5)
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+
         }
 
         .review-pop-close {
@@ -288,19 +290,23 @@
                     let star_repeat = ' ⭐ '.repeat(star)
 
                     let temp_html = `<div class="rowg-0">
+                                        <div onclick="openPopup()" style="cursor: pointer;">
                                             <div class="col-md-12">
                                                 <img src="${image}"
                                                     class="img-fluid rounded-start" alt="...">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">${title}</h5>
-                                                    <p class="card-text"><small class="text-body-secondary">${desc}</small></p>
-                                                    <p>${star_repeat}</p>
-                                                    <p class="review">${review}</p>
+                                                <div class="col-md-12">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">${title}</h5>
+                                                        <p>${star_repeat}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>`
+                                        </div>
+                                        <div class="review-pop" id="review-popup">
+                                            <p class="review">${review}</p>
+                                            <button class="review-pop-close" onclick="closePopup()">닫기</button>
+                                        </div>
+                                    </div>`
                     $('#cards-box').append(temp_html)
                 });
             })
@@ -526,7 +532,7 @@
                     </div>
                     <div class="review-pop" id="review-popup">
                         <p class="review">여기에는 리뷰 내용이 들어갑니다.</p>
-                        <button onclick="closePopup()">닫기</button>
+                        <button class="review-pop-close" onclick="closePopup()">닫기</button>
                     </div>
                 </div>
             </div>
@@ -546,7 +552,7 @@
                     </div>
                     <div class="review-pop" id="review-popup">
                         <p class="review">여기에는 리뷰 내용이 들어갑니다.</p>
-                        <button onclick="closePopup()">닫기</button>
+                        <button class="review-pop-close" onclick="closePopup()">닫기</button>
                     </div>
                 </div>
             </div>
@@ -566,7 +572,7 @@
                     </div>
                     <div class="review-pop" id="review-popup">
                         <p class="review">여기에는 리뷰 내용이 들어갑니다.</p>
-                        <button onclick="closePopup()">닫기</button>
+                        <button class="review-pop-close" onclick="closePopup()">닫기</button>
                     </div>
                 </div>
             </div>
@@ -586,7 +592,7 @@
                     </div>
                     <div class="review-pop" id="review-popup">
                         <p class="review">여기에는 리뷰 내용이 들어갑니다.</p>
-                        <button onclick="closePopup()">닫기</button>
+                        <button class="review-pop-close" onclick="closePopup()">닫기</button>
                     </div>
                 </div>
             </div>
